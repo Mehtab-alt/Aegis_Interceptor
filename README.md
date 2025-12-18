@@ -1,4 +1,4 @@
-# AEGIS INTERCEPTOR v1.0
+# AEGIS INTERCEPTOR
 
 **Advanced Local Network Interception & Testing Tool (2025)**
 
