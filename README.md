@@ -23,17 +23,17 @@ This tool demonstrates ARP spoofing, DNS spoofing, packet sniffing, and network 
 
 ### Key Features
 A user agreement is enforced on first launch.
-1. Zero-Copy Engine (ZCE)
-The core of AEGIS is its custom Zero-Copy Engine, designed for high-throughput analysis with minimal CPU overhead. By leveraging raw socket optimizations and Scapy-integrated fallback buffers, the ZCE ensures that the act of observation does not introduce significant latency or an "observer effect" into the network environment.
+*    Zero-Copy Engine (ZCE)
+  The core of AEGIS is its custom Zero-Copy Engine, designed for high-throughput analysis with minimal CPU overhead. By leveraging raw socket optimizations and Scapy-integrated fallback buffers, the ZCE ensures that the act of observation does not introduce significant latency or an "observer effect" into the network environment.
 
-2. DNS Distortion & Resolution Analysis
-The DNS Distortion module serves as a laboratory for testing DNS resilience. It allows researchers to simulate resolution anomalies, such as redirection or record spoofing, within a controlled environment. This feature is essential for hardening enterprise infrastructure against modern "Man-in-the-Middle" (MitM) vectors.
+*    DNS Distortion & Resolution Analysis
+  The DNS Distortion module serves as a laboratory for testing DNS resilience. It allows researchers to simulate resolution anomalies, such as redirection or record spoofing, within a controlled environment. This feature is essential for hardening enterprise infrastructure against modern "Man-in-the-Middle" (MitM) vectors.
 
-3. Passive Intelligence & Endpoint Fingerprinting
-Operating in a non-intrusive "Stealth Mode," AEGIS aggregates metadata without generating active probes. By analyzing Time-to-Live (TTL) values and payload signatures, the module identifies "shadow IT" devices and unauthorized hardware that may represent a weak link in the network security chain.
+*    Passive Intelligence & Endpoint Fingerprinting
+  Operating in a non-intrusive "Stealth Mode," AEGIS aggregates metadata without generating active probes. By analyzing Time-to-Live (TTL) values and payload signatures, the module identifies "shadow IT" devices and unauthorized hardware that may represent a weak link in the network security chain.
 
-4. Security Circuit Breaker (Protocol Slayer)
-The Security Circuit Breaker is a high-speed parsing engine that validates network flows against RFC standards. It identifies malformed headers or protocol smuggling attempts and allows researchers to terminate non-compliant or suspicious sessions instantly during a security audit.
+*    Security Circuit Breaker (Protocol Slayer)
+  The Security Circuit Breaker is a high-speed parsing engine that validates network flows against RFC standards. It identifies malformed headers or protocol smuggling attempts and allows researchers to terminate non-compliant or suspicious sessions instantly during a security audit.
 
 ### Other Features
 *    Raw Socket Injection: Bypasses standard OS latency for high-performance packet manipulation.
