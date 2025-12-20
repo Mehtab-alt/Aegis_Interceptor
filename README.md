@@ -3,7 +3,7 @@
 **Local Network Interception & Testing Tool**
 
 <div align="center">
-  <img src="assets/Screenshot_01" alt="Aegis Banner" width="100%">
+  <img src="assets/Screenshot_01.png" alt="Aegis Banner" width="100%">
   <br><br>
   
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
