@@ -24,11 +24,11 @@ This tool demonstrates ARP spoofing, DNS spoofing, packet sniffing, and network 
 A user agreement is enforced on first launch.
 
 ### Features
-*   ** Raw Socket Injection:** Bypasses standard OS latency for high-performance packet manipulation.
-*   ** Ghost Mode (MitM):** Intercepts traffic transparently without disrupting target connectivity.
-*   ** Async Scan Engine:** Sweeps subnets 10x faster than standard serial scanners using `asyncio`.
-*   ** Gateway Safe Mode:** Prevents accidental router DoS during audits.
-*   ** Passive Fingerprinting:** Identifies OS types (Windows/Linux/iOS) via TTL analysis.
+*    Raw Socket Injection: Bypasses standard OS latency for high-performance packet manipulation.
+*    Ghost Mode (MitM): Intercepts traffic transparently without disrupting target connectivity.
+*    Async Scan Engine: Sweeps subnets 10x faster than standard serial scanners using `asyncio`.
+*    Gateway Safe Mode: Prevents accidental router DoS during audits.
+*    Passive Fingerprinting: Identifies OS types (Windows/Linux/iOS) via TTL analysis.
 
 ### Requirements
 - Python 3.8+
