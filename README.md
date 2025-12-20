@@ -1,6 +1,6 @@
 # AEGIS INTERCEPTOR
 
-**Advanced Local Network Interception & Testing Tool (2025)**
+**Local Network Interception & Testing Tool**
 
 <div align="center">
   <img src="assets/icon.ico" alt="Aegis Banner" width="100%">
