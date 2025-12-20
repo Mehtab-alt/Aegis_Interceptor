@@ -3,7 +3,7 @@
 **Advanced Local Network Interception & Testing Tool (2025)**
 
 <div align="center">
-  <img src="assets/banner.png" alt="Aegis Banner" width="100%">
+  <img src="assets/icon.ico" alt="Aegis Banner" width="100%">
   <br><br>
   
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
