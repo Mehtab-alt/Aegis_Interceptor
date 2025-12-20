@@ -27,15 +27,6 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt, QThread, pyqtSignal
 from PyQt6.QtGui import QColor, QBrush, QAction, QCursor
 
-# ==========================================
-# VISUALIZATION IMPORTS
-# ==========================================
-PYQTGRAPH_AVAILABLE = False
-try:
-    import pyqtgraph as pg
-    PYQTGRAPH_AVAILABLE = True
-except ImportError:
-    pass
 
 # ==========================================
 # GLOBAL PLACEHOLDERS (LOADED DYNAMICALLY)
@@ -55,10 +46,6 @@ THEME = {
     "log_bg": "#0f172a", "log_text": "#2dd4bf", "good": "#4ade80", "warn": "#facc15"
 }
 
-if PYQTGRAPH_AVAILABLE:
-    pg.setConfigOption('background', THEME['bg_app'])
-    pg.setConfigOption('foreground', THEME['text_s'])
-    pg.setConfigOptions(antialias=True)
 
 STYLESHEET = f"""
 QMainWindow {{ background-color: {THEME['bg_app']}; }}
@@ -789,7 +776,7 @@ class TargetHealthMonitor(QThread):
                         txt = "ALIVE"
                         col = THEME['good']
                     else:
-                        txt = f"ONLINE {int(latency_ms)}ms"
+                        txt = f"In Network {int(latency_ms)}ms"
                         col = THEME['warn'] if latency_ms > 500 else THEME['good']
                     self.status_update.emit(ip, txt, col)
                 else:
@@ -1155,6 +1142,48 @@ class SettingsDialog(QDialog):
         self.tabs.addTab(tab_dns, "DNS Distortion")
         self.tabs.addTab(tab_perf, "Performance")
         
+        # --- TAB 4: ABOUT ---
+        tab_about = QWidget()
+        l_about = QVBoxLayout(tab_about)
+        grp_about = QGroupBox("About AEGIS INTERCEPTOR")
+        about_layout = QVBoxLayout()
+        
+        # Get theme from parent
+        theme_bg_card = parent.THEME['bg_card'] if parent and hasattr(parent, 'THEME') else "#223f3c"
+        theme_border = parent.THEME['border'] if parent and hasattr(parent, 'THEME') else "#33524e"
+        theme_text_p = parent.THEME['text_p'] if parent and hasattr(parent, 'THEME') else "#F1F5F9"
+        theme_accent = parent.THEME['accent'] if parent and hasattr(parent, 'THEME') else "#2dd4bf"
+        
+        about_text = QTextEdit()
+        about_text.setReadOnly(True)
+        about_text.setHtml(f"""
+        <div style="color: {theme_text_p}; font-family: Consolas, sans-serif; font-size: 10pt;">
+        <h2 style="color: {theme_accent}; text-align: center;">AEGIS INTERCEPTOR v1.0</h2>
+        <p><b>Network Testing Program</b></p>
+        <p>This is a network testing tool designed for authorized penetration testing and network security analysis.</p>
+        <p>Use ONLY on networks you own or have explicit written permission to test.</p>
+        <br>
+        <p><b>Developer:</b> Mehtab Gul</p>
+        <p>AEGIS INTERCEPTOR is a network testing tool for authorized security testing purposes.</p>
+        </div>
+        """)
+        about_text.setStyleSheet(f"""
+            QTextEdit {{
+                background-color: {theme_bg_card};
+                border: 1px solid {theme_border};
+                color: {theme_text_p};
+                font-family: Consolas, sans-serif;
+                font-size: 10pt;
+            }}
+        """)
+        
+        about_layout.addWidget(about_text)
+        grp_about.setLayout(about_layout)
+        l_about.addWidget(grp_about)
+        l_about.addStretch()
+        
+        self.tabs.addTab(tab_about, "About")
+        
         layout.addWidget(self.tabs)
         btn_save = QPushButton("APPLY & SAVE")
         btn_save.clicked.connect(self.accept)
@@ -1361,9 +1390,8 @@ class AegisWindow(QMainWindow):
         bottom_widget = QWidget()
         bottom_layout = QHBoxLayout(bottom_widget)
         bottom_layout.setContentsMargins(10, 0, 10, 10)
-        bottom_splitter = QSplitter(Qt.Orientation.Horizontal)
 
-        # System Log with Export Button
+        # System Log with Export Button (Now fills the whole bottom area)
         log_frame = QFrame(); log_frame.setObjectName("Card")
         log_l = QVBoxLayout(log_frame)
         
@@ -1382,27 +1410,12 @@ class AegisWindow(QMainWindow):
 
         self.log_console = QTextEdit(); self.log_console.setObjectName("SystemLog"); self.log_console.setReadOnly(True)
         log_l.addWidget(self.log_console)
-        bottom_splitter.addWidget(log_frame)
-
-        # Graph Section
-        graph_frame = QFrame(); graph_frame.setObjectName("Card")
-        graph_l = QVBoxLayout(graph_frame)
-        graph_l.addWidget(QLabel("VISUAL SIGNAL ANALYTICS (Latency ms)", objectName="CardTitle"))
         
-        if PYQTGRAPH_AVAILABLE:
-            self.setup_graph(graph_l)
-        else:
-            lbl_err = QLabel("PyQtGraph not installed.\nRun: pip install pyqtgraph")
-            lbl_err.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            lbl_err.setStyleSheet(f"color: {THEME['text_s']};")
-            graph_l.addWidget(lbl_err)
+        # Add the log directly to the layout (No splitter needed)
+        bottom_layout.addWidget(log_frame)
         
-        bottom_splitter.addWidget(graph_frame)
-        bottom_splitter.setSizes([700, 500])
-        
-        bottom_layout.addWidget(bottom_splitter)
         v_splitter.addWidget(bottom_widget)
-        v_splitter.setSizes([500, 250])
+        v_splitter.setSizes([550, 200]) # Adjust ratio: Top area is larger
         main_layout.addWidget(v_splitter)
 
     def export_logs(self):
@@ -1450,21 +1463,13 @@ class AegisWindow(QMainWindow):
         selected_items = self.table_kill.selectedItems()
         if not selected_items:
             self.selected_target_ip = None
-            if PYQTGRAPH_AVAILABLE and hasattr(self, 'curve'):
-                self.curve.setData([0]*100)
             return
         row = selected_items[0].row()
         ip = self.table_kill.item(row, 0).text()
         self.selected_target_ip = ip
-        if PYQTGRAPH_AVAILABLE and hasattr(self, 'curve'):
-            data = list(self.latency_history[ip])
-            self.curve.setData(data)
 
     def update_latency_visuals(self, ip, latency_ms):
         self.latency_history[ip].append(latency_ms)
-        if PYQTGRAPH_AVAILABLE and hasattr(self, 'curve'):
-            if self.selected_target_ip == ip:
-                self.curve.setData(list(self.latency_history[ip]))
 
     def add_system_log(self, message):
         ts = datetime.now().strftime("%H:%M:%S")
@@ -1840,6 +1845,37 @@ if __name__ == "__main__":
         )
         msg.setIcon(QMessageBox.Icon.Warning)
         msg.setStandardButtons(QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel)
+        msg.setStyleSheet(f"""
+            QMessageBox {{
+                background-color: {THEME['bg_app']};
+                color: {THEME['text_p']};
+                font-family: Consolas, "Segoe UI", sans-serif;
+                font-size: 10pt;
+            }}
+            QLabel {{
+                color: {THEME['text_p']};
+                font-family: Consolas, "Segoe UI", sans-serif;
+                font-size: 10pt;
+            }}
+            QPushButton {{
+                background-color: {THEME['bg_card']};
+                border: 1px solid {THEME['accent']};
+                color: {THEME['accent']};
+                padding: 6px 12px;
+                border-radius: 4px;
+                font-weight: bold;
+                font-family: Consolas, "Segoe UI", sans-serif;
+                font-size: 10pt;
+            }}
+            QPushButton:hover {{
+                background-color: {THEME['accent']};
+                color: {THEME['accent_text']};
+            }}
+            QPushButton:pressed {{
+                background-color: {THEME['accent']};
+                color: {THEME['accent_text']};
+            }}
+        """)
         
         # Rename "Ok" button to "I Accept"
         btn_accept = msg.button(QMessageBox.StandardButton.Ok)
@@ -1852,7 +1888,43 @@ if __name__ == "__main__":
                 with open(DISCLAIMER_FILE, 'w') as f:
                     f.write(f"Agreement accepted by user on {datetime.now()}")
             except Exception as e:
-                QMessageBox.critical(None, "Error", f"Could not save agreement file: {e}")
+                # Create error message box with theme
+                error_msg = QMessageBox()
+                error_msg.setWindowTitle("Error")
+                error_msg.setText(f"Could not save agreement file: {e}")
+                error_msg.setIcon(QMessageBox.Icon.Critical)
+                error_msg.setStyleSheet(f"""
+                    QMessageBox {{
+                        background-color: {THEME['bg_app']};
+                        color: {THEME['text_p']};
+                        font-family: Consolas, "Segoe UI", sans-serif;
+                        font-size: 10pt;
+                    }}
+                    QLabel {{
+                        color: {THEME['text_p']};
+                        font-family: Consolas, "Segoe UI", sans-serif;
+                        font-size: 10pt;
+                    }}
+                    QPushButton {{
+                        background-color: {THEME['bg_card']};
+                        border: 1px solid {THEME['accent']};
+                        color: {THEME['accent']};
+                        padding: 6px 12px;
+                        border-radius: 4px;
+                        font-weight: bold;
+                        font-family: Consolas, "Segoe UI", sans-serif;
+                        font-size: 10pt;
+                    }}
+                    QPushButton:hover {{
+                        background-color: {THEME['accent']};
+                        color: {THEME['accent_text']};
+                    }}
+                    QPushButton:pressed {{
+                        background-color: {THEME['accent']};
+                        color: {THEME['accent_text']};
+                    }}
+                """)
+                error_msg.exec()
                 sys.exit(1)
         else:
             sys.exit(0)
