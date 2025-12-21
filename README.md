@@ -16,11 +16,6 @@
 
 This tool demonstrates ARP spoofing, DNS spoofing, packet sniffing, and network interruption techniques in a controlled lab environment.
 
-### ⚠️ Legal Warning
-- Use **only** on networks you own or have **explicit written permission** to test.
-- Unauthorized use may violate laws such as the Computer Fraud and Abuse Act (US), Computer Misuse Act (UK), or equivalent in your country.
-- The author is **not responsible** for any misuse.
-
 ### Key Features
 A user agreement is enforced on first launch.
 *    Zero-Copy Engine (ZCE)
